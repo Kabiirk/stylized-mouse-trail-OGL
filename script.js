@@ -6,45 +6,53 @@ document.body.appendChild(gl.canvas);
 gl.clearColor(0.9, 0.9, 0.9, 1);
 
 const camera = new Camera(gl);
-camera.position.z = 5;
+camera.position.z = 3;
+
+const controls = new Orbit(camera);
+
+const scene = new Transform();
+
+let polyline;
 
 function resize(){
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.perspective({
         aspect: gl.canvas.width / gl.canvas.height
     });
+    if(polyline){
+        polyline.resize();
+    }
 }
 window.addEventListener("resize", resize, false);
 resize();
 
-const scene = new Transform();
-const geometry = new Box(gl);
-const program = new Program(gl, {
-    vertex:`
-    attribute vec3 position;
-    
-    uniform mat4 modelViewMatrix;
-    uniform mat4 projectionMatrix;
-    void main() {
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+const count = 100;
+const points = [];
+for(let i=0; i<count; i++){
+    const x = (i/(count-1)-0.5)*3;
+    const y = Math.sin(i/10.5) * 0.5;
+    const z = 0;
+
+    points.push(new Vec3(x, y, z));
+}
+
+polyline = new Polyline(gl, {
+    points,
+    uniforms : {
+        uColor : { value: new Color('#1b1b1b') },
+        uThickness : { value: 20 },
+        uMiter : { value: 0 },
     }
-    `,
-    fragment:`
-    void main(){
-        gl_FragColor = vec4(1.0);
-    }
-    `
 });
 
-const mesh = new Mesh(gl, {geometry, program});
-mesh.setParent(scene);
+polyline.mesh.setParent(scene);
+
+resize();
 
 requestAnimationFrame(update);
 
 function update(t){
     requestAnimationFrame(update);
-
-    mesh.rotation.y -= 0.04;
-    mesh.rotation.x += 0.04;
+    controls.update();
     renderer.render({scene, camera});
 }
