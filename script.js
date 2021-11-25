@@ -1,9 +1,9 @@
-import { Renderer, Camera, Transform, Box, Program, Mesh } from "https://unpkg.com/ogl";
+import { Renderer, Camera, Orbit, Transform, Geometry, Vec3, Color, Polyline } from "https://cdn.jsdelivr.net/npm/ogl@0.0.32/dist/ogl.mjs";
 
-
-const renderer = new Renderer();
+const renderer = new Renderer({ dpr: 2 });
 const gl = renderer.gl;
 document.body.appendChild(gl.canvas);
+gl.clearColor(0.9, 0.9, 0.9, 1);
 
 const camera = new Camera(gl);
 camera.position.z = 5;
