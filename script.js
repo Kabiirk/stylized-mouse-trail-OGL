@@ -39,7 +39,7 @@ const vertex = `
             }
         `;
 
-
+alert("Hover mouse on blank page to see stylized mouse-trails . Click 'OK' when ready !");
 
 const renderer = new Renderer({ dpr: 2 });
 const gl = renderer.gl;
